@@ -19,19 +19,6 @@ class ClassModule3():
         # Assignation de paraGen reçu en paramètre en propriété de méthode
         self.paraGen = paraGen
         ClassModule3.imprimeOK = paraGen["imprimeOK"]
-        """# ------------------------------------------
-        # Instanciation d'un objet biblio2 basé sur module2
-        if ClassModule3.imprimeOK==True:
-            print("Instanciation d'un objet de module2")
-        import noyau_module2 as biblio2
-        xBiblio2 = biblio2.ClassModule2(paraGen)        
-        
-        # Appel d'une méthode de xBiblio2 (module2)
-        # Ceci peut être fait de partout dans la classe
-        quittance2 = xBiblio2.imprimeHelloWorld()
-        if ClassModule3.imprimeOK==True:
-            print(quittance2)
-        """# --------------------------------------------
         if ClassModule3.imprimeOK==True:
             print("De module3 : Instanciation d'un objet ClassModule2")
         

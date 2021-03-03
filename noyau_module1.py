@@ -23,7 +23,7 @@ def ouSuisJe():
     import os
     absFilePath = os.path.abspath(__file__)
     chemin, nomScript = os.path.split(absFilePath)
-    chemin = chemin.replace("\\","/")
+    chemin = chemin.replace("\\","/")    # le \ est doublé mais compte simple
     return chemin
 
 
@@ -90,13 +90,12 @@ def xlsx2List(nomFichierXlsx,listXlsx,paraGen):
     
     Cette fonction retourne la liste listXlsx
     """
-    
     # Etablissement du nom de fichier xlsx complet
     racineChemin = ouSuisJe()
-    racineCheminSRep = racineChemin + paraGen["cheminData"] + "/"
+    racineCheminSRep = racineChemin + paraGen["cheminMessages"] + "/"
     nomXlsxComplet = racineCheminSRep + nomFichierXlsx
-    # if paraGen["imprimeOK"]:
-    #     print("xlsx2List : nomXlsxComplet : {}".format(nomXlsxComplet))
+    if paraGen["imprimeOK"]:
+       print("!!! xlsx2List : nomXlsxComplet : {}".format(nomXlsxComplet))
     
     # accès au fichier excel et à sa feuille active
     import openpyxl
