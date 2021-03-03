@@ -19,8 +19,7 @@ class ClassModule3():
         # Assignation de paraGen reçu en paramètre en propriété de méthode
         self.paraGen = paraGen
         ClassModule3.imprimeOK = paraGen["imprimeOK"]
-        if ClassModule3.imprimeOK==True:
-            print("De module3 : Instanciation d'un objet ClassModule2")
+
         
     def imprimeBonjour(self):
         if ClassModule3.imprimeOK==True:    # exemple accès d'un paramètre

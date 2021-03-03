@@ -81,7 +81,9 @@ def xlsx2List(nomFichierXlsx,listXlsx,paraGen):
     
     Le nom complet avec chemin est formé ici au moyen de la
     fonction OuSuisJe() et du paraGen du nom du sous-pépertoire
-    relatif contenant le fichier à ouvrir.
+    relatif contenant le fichier à ouvrir. (ex: data/)
+    Le sous-répertoire de paraGen[] ne peut être vide. Les fichiers xlsx
+    ouverts ici doivent être dans un autre dossier que la racinde de Memolab.
     
     Le nom de liste passé en paramètre doit correspondre à une
     liste existante, dont le contenu sera substitué par celui
@@ -94,8 +96,6 @@ def xlsx2List(nomFichierXlsx,listXlsx,paraGen):
     racineChemin = ouSuisJe()
     racineCheminSRep = racineChemin + paraGen["cheminMessages"] + "/"
     nomXlsxComplet = racineCheminSRep + nomFichierXlsx
-    if paraGen["imprimeOK"]:
-       print("!!! xlsx2List : nomXlsxComplet : {}".format(nomXlsxComplet))
     
     # accès au fichier excel et à sa feuille active
     import openpyxl
@@ -135,7 +135,7 @@ def list2Xlsx(listXlsx,nomFichierXlsx,paraGen):
     
     Le nom complet avec chemin est formé ici au moyen de la
     fonction OuSuisJe() et du paraGen du nom du sous-pépertoire
-    relatif contenant le fichier à ouvrir.
+    relatif contenant le fichier à ouvrir. (ex: /data)
     
     Le nom de liste passé en paramètre doit correspondre à une
     liste existante. Sa structure sera compatible avec celle de la
@@ -197,9 +197,67 @@ listXlsx[0][0] = "Origine"
 list2Xlsx(listXlsx,nomFichierXlsx,paraGen)
 """# ###################################################  
 
+def message(titreMessage, listMessages):
+    """ Cette fonction retourne le message correspondant à son titre.
     
+    Les messages sont enregistrés dans data/messages.xlsx. Ils sont
+    chargés dans la listMessages[], en entête du script main.
+
+    Parameters
+    ----------
+    titreMessage : str
+        La 2e colonne de la liste contient les titres de chaque messages
+        situés, eux dans la 3e colonne.
+
+    Returns
+    -------
+    message : str
+
+    """
+    for element in enumerate(listMessages):
+        # element est un tuple de la ligne en cours
+        #    print("element : {} \n Type(element) : {} ".format(element, type(element)))
+        # titre est une liste de la ligne en cours
+        listElement = element[1]
+        # listElement est une liste de la ligne en cours
+        #    print("listElement : {} \n Type(listElement) : {} ".format(listElement, type(listElement)))
+        titre = listElement[1]
+        # titre est le titre de la ligne en cours
+        #    print("titre : {} \n Type(titre) : {} ".format(titre, type(titre)))
+        if titre == titreMessage:
+            #    print("Trouvé !")
+            return listElement[2]
+            break
+    return "Message introuvable"
     
+def extraitNomFichier(nomComplet):
+    """
+    Extraction du nom de fichier d'une chaine complète
+
+    Parameters
+    ----------
+    nomComplet : str
+        nom complet du fichier depuis le disque avec path 
+
+    Returns
+    -------
+    nom du fichier sans le chemin
+
+    """
+    # Repérer la position du dernier /
+    positionAvantSlach = nomComplet.rfind("/")
+    # print(positionAvantSlach)
     
+    nomFichier = ""
+    compteur = 0
+    for car in nomComplet:
+        if compteur > positionAvantSlach:
+            nomFichier += str(car)
+        compteur += 1
+    # print(nomFichier)
+    
+    return nomFichier
+      
     
     
     

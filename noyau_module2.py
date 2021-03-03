@@ -12,38 +12,47 @@ retour de méthode à l'appelant
 """
 class ClassModule2():
     
+    # ressources requises
+    import tkinter.filedialog as fd
+    import tkinter
+    import noyau_module1 as biblio1      
+    
     # Variables de classe accessibles de tous les objets de cette classe
     imprimeOK = None
+    paraGen = []
+    listMessages = []
 
     # Constructeur recevant en paramètre paraGen
-    def __init__(self,paraGen):                # Constructeur
+    def __init__(self,paraGen, listMessages):                # Constructeur
         # ceci est exécuté à l'instanciation d'une leçon (style autoexec)
         self.paraGen = paraGen
+        ClassModule2.paraGen = self.paraGen
+        self.listMessages = listMessages
+        ClassModule2.listMessages = self.listMessages
         ClassModule2.imprimeOK = paraGen["imprimeOK"]
 
-        # ------------------------------------------
-        # Instanciation d'un objet biblio3 basé sur module3
-        if ClassModule2.imprimeOK==True:
-            print("Instanciation d'un objet de module3")
-        
-        import noyau_module3 as biblio3
-        xBiblio3 = biblio3.ClassModule3(paraGen)        
-        
-        """ Code de mise au point
-        
-        # Appel d'une méthode de xBiblio3 (module3)
-        # Ceci peut être fait de partout dans la classe
-        quittance3 = xBiblio3.imprimeBonjour()
-        if ClassModule2.imprimeOK==True:
-            print(quittance3)
+          
 
-        if ClassModule2.imprimeOK==True:
-            print("De module2 : Instanciation d'un objet ClassModule2")
-        """ # --------------------------------------------        
-    def imprimeHelloWorld(self):
-        if ClassModule2.imprimeOK==True:    # exemple accès d'un paramètre
-            print("De module2 : Hello World !")    # depuis cette classe
-            return "C'est fait !"
-        else:
-            return "Ce n'est pas fait car imprimeOK = False !"
+
+# ------------------------------------------
+        # Instanciation d'un objet biblio3 basé sur module3
+        # if ClassModule2.imprimeOK==True:
+        #     print("Instanciation d'un objet de module3")
         
+        # import noyau_module3 as biblio3
+        # xBiblio3 = biblio3.ClassModule3(paraGen)        
+        
+    def selectionUtilisateur(self):
+        # Répertoire hôte du registre des utilisateurs
+        cheminUtilisateurs = ClassModule2.paraGen["cheminUtilisateurs"]
+        fenTemp = self.tkinter.Tk()
+        f_utilisateurEnCours = self.fd.askopenfilename(parent=fenTemp,
+                                            title="Selection leçon en cours...",
+                                            initialdir=cheminUtilisateurs,
+                                            defaultextension=".xls",
+                                            multiple=False)
+        fenTemp.destroy()
+        # Extraction nomDeFIchier
+        f_utilisateurEnCours = ClassModule2.biblio1.extraitNomFichier(f_utilisateurEnCours)
+        
+        print(f_utilisateurEnCours)

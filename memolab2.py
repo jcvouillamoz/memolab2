@@ -34,6 +34,10 @@ pourront appeler.
 
 210303 - Jean-Claude Vouillamoz
 """
+# ressources modules python
+import tkinter
+
+
 """ BASE DE REGISTRE PRIIVEE paraGen[]
 Création de la base de registre privée de Memolab2 contenue dans le fichier
 excel params_generaux présent sur le même répertoire que ce script, et chargée
@@ -48,7 +52,7 @@ paraGen = biblio1.chargeParametresGeneraux(nomFichierParametres)
 """ LISTE DES MESSAGES listMessages[] - Chargement
 Afin d'alléger le code et permettre par la suite de proposer un environnement
 multilingue, tous les messages générés par Memolab2 sont enregistrés dans un
-fichier excel séparé messages.xls. Par défaut il est stocké sur la racine de
+fichier excel séparé messages.xls. Par défaut il est stocké sur /data de
 Memolab2 (voir paraGen["cheminMessages"]).
 """ # -------------------
 # chargement d'un fichier contenu dans /data
@@ -59,7 +63,7 @@ listMessages = biblio1.xlsx2List("messages.xlsx", listMessages, paraGen)
 # Instanciation de biblio2 pour avoir accès à toutes ses méthodes
 # et attributs à portée de ce script (objet de portée de ce script)
 import noyau_module2 as biblio2
-xBiblio2 = biblio2.ClassModule2(paraGen)
+xBiblio2 = biblio2.ClassModule2(paraGen, listMessages)
 
 # Instanciation de biblio3 pour avoir accès à toutes ses méthodes
 # et attributs à portée de ce script (objet de portée de ce script)
@@ -69,17 +73,10 @@ xBiblio3 = biblio3.ClassModule3(paraGen)
 # Assignation optionnelle de variables accessible dans ce script
 imprimeOK = paraGen["imprimeOK"]    # Flag d'impression optionnelle vers la console
 
-""" Codes de mise au point
-# Exemple appel d'une méthode de module 2
-DonneeRetournee = xBiblio2.imprimeHelloWorld()
-if imprimeOK==True:
-    print("De noyau :",DonneeRetournee)
+# test mise au point imprime message
+testMessage = biblio1.message("Salut", listMessages)
+print(testMessage)
 
-# Exemple appel d'une méthode de module 3
-DonneeRetournee = xBiblio3.imprimeBonjour()
-if imprimeOK==True:
-    print("De noyau :",DonneeRetournee)
-"""
 
 """ SELECTION UTILISATEUR 
 L'idée est de permettre la mémorisation d'un historique d'évolution de 
@@ -88,3 +85,9 @@ est situé dans le sous-répertoire /utilisateurs (paraGen["cheminUtilisateurs"]
 Il contient les données d'identification ainsi que le nom d'un fichier personnel
 de journalisation des performances et résultats.
 """
+xBiblio2.selectionUtilisateur()
+
+
+
+
+
