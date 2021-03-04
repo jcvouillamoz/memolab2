@@ -85,8 +85,359 @@ est situé dans le sous-répertoire /utilisateurs (paraGen["cheminUtilisateurs"]
 Il contient les données d'identification ainsi que le nom d'un fichier personnel
 de journalisation des performances et résultats.
 """
-xBiblio2.selectionUtilisateur()
+# xBiblio2.selectionUtilisateur()
 
+# ========================== G U I de MEMOLAB ==========================
+
+# Création fenêtre principale
+window = tkinter.Tk()
+# Configuration fenêtre principale
+window.title("Memolab2021a")
+window.geometry("1000x600")
+# window.minsize(640,480)
+window['bg'] = '#d6ffd9'	    # Couleur du fond
+
+
+####################### Configuration des boutons #######################
+
+
+
+
+
+
+################## Configuration des fonctions appelées par le menu #######
+
+"""
+Structure des menus :
+
+    Utilisateur:
+        Sélectionner
+        Créer
+        Editer
+        Supprimer
+        Statistiques
+        Partager
+
+    Fichiers:
+        Créer Leçon
+        Ouvrir Lecon
+        Supprimer lecon
+        Partager
+
+    Laboratoire:
+        Selectionner lecon
+        Questions-Réponses courtes
+        Questions choix multiples
+
+    Options:
+        Préférences
+        Aide
+        A propos
+
+"""
+
+def utilisateurSelectionner():
+    """
+    Un fichier utilisateurs.xlsx contient la liste des
+    noms d'utilisateurs et les noms de fichiers correspondants.
+    Il contient également une colonne avec un flag au nom
+    de l'utilisateur actif. C'est à lui que sont imputés l'historique
+    de son activité et ses performances
+    Cette fonction permet à l'utilisateur de s'annoncer et donc
+    d'être identifié comme l'utilisateur actif par le flag
+
+    Returns
+    -------
+    nomUtilisateurActif : str
+
+    """
+    # Sélection dans la liste des utilisateurs
+    nomUtilisateurActif = "JCV"
+    # Enregistrement dans le fichiers utilisateurs.xlsx
+
+    # Bienvenue <Nom utilisateur>
+    messageTitre = "Sélection utilisateur actif..."
+    messageContenu = ""
+    messageContenu += "Bienvenue " + nomUtilisateurActif + " !" + "\n"
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    
+
+    return nomUtilisateurActif
+
+def utilisateurCreer():
+    # Saisie nom d'utilisateur
+
+    # formation du nom correspondant pour le fichier
+
+    # recherche du fichier
+
+    # création du fichier au nom de l'utilisateur
+
+    # enregistrement du nouvel utilisateur dans le registre utilisateurs.xlsx
+
+    # informations d'accès
+    messageTitre = "Menu-Création d'un nouvel utilisateur"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def utilisateurEditer():
+    messageTitre = "Menu - Editer les données d'un utilisateur"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def utilisateurSupprimer():
+    # Saisie nom d'utilisateur
+
+    # formation du nom correspondant pour le fichier
+
+    # recherche du fichier
+
+    # demande de confirmation du fichier trouvé
+
+    # suppression du fichier
+
+    # information fichier supprimé
+    messageTitre = "Suppression d'un fichier utilisateur..."
+    messageContenu = ""
+    messageContenu += "Le fichier de l'utilisateur confirmé" + "\n"
+    messageContenu += "a été supprimé." + "\n"
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def utilisateurStatistiques():
+    messageTitre = "Menu - Utilisateur statistiques"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+def utilisateurPartager():
+    messageTitre = "Menu - Utilisateur partager"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+#-----------------------
+
+def fichiersCreerLecon():
+    messageTitre = "Menu - Création fichier de lecon"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+def fichiersOuvrirLecon():
+    messageTitre = "Menu - Ouvrir lecon"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+def fichiersSupprimerLecon():
+    messageTitre = "Menu - Supprimer une lecon"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+def fichiersPartagerLecon():
+    messageTitre = "Menu - Partager une lecon"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+#-------------
+
+def laboratoireSelectionnerLecon():
+    # Sélection fichier de lecon à étudier
+    # import lecon
+    # xLecon = lecon.Lecon(paraGen)      # Instanciation objet Lecon
+
+    # Widget affichage Nom de la leçon en cours
+    nomLeconEnCours = xLecon.selectLeconEnCours(paraGen)
+    nomFichier = biblio1.extraitNomFichier(nomLeconEnCours)
+    xGUI.afficheNomLeconEnCours(frameEntete, nomFichier)    
+    
+    # Widget affichage Nombre de questions de la leçon en cours
+    nbQuestionsLeconEnCours = xLecon.nbreTotalQuestions
+    strNbQuestionsLeconEnCours = str(nbQuestionsLeconEnCours)
+    xGUI.afficheNbQuestLeconEnCours(frameEntete, strNbQuestionsLeconEnCours) 
+   
+    #############  test accessibilité aux méthodes  ##################
+    questionTiree = xLecon.tirerUneQuestionAuHasard(xLecon.leconEnCours)
+    jcvt.imprime("Question tirée au hasard : {}".format(questionTiree), imprimeOK)
+    # print("Question tirée au hasard : {}".format(questionTiree))
+    
+    # leconTraitee = xLecon.supprimerQuestion(xLecon.leconEnCours, 5)
+    # print("Leçon traitée : {}".format(leconTraitee))
+    # leconTraitee = xLecon.supprimerQuestion(leconTraitee, 5)
+    
+    ##################################################################
+
+def laboratoireQuestionsReponsesCourtes():
+    messageTitre = "Questions réponses courtes..."
+    messageContenu = ""
+    messageContenu += "En cours de développement..."
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def laboratoireQuestionsChoixMultiples():
+    messageTitre = "Questions à choix multiples..."
+    messageContenu = ""
+    messageContenu += "En cours de développement..."
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    
+def laboraoireFermerLecon():
+    # Réinitialiser liste leconEnCours
+    xLecon.leconEnCours = []
+    xLecon.nbreTotalQuestions = 0
+    # Supprimer les deux widgets nomLecon et nb de questions
+    xGUI.supprimerNomLeconEnCours()
+    xGUI.supprimerNbQuestLeconEnCours()
+
+
+#-------------
+
+def optionsPreferences():
+    messageTitre = "Menu - Options préférences"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def optionsAide():
+    messageTitre = "Aide..."
+    messageContenu = ""
+    messageContenu += "En cours de développement..."
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+def optionsAProposDe():
+    messageTitre = "Menu - A propos de"
+    messageContenu = biblio1.message(messageTitre, listMessages)
+    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+
+
+
+####################### Programme principal ################################
+
+
+
+
+
+
+
+############### Configuration des structures de la barre de menu #############
+# Instanciation d'un objet Menu appelé menu
+# La fenêtre parent est la fenêtre window
+menu = tkinter.Menu(window)
+
+menu["foreground"] = "#cce4ff"
+
+########## Sous-menu Utilisateur ##############
+# Instanciation d'un sous-menu de menu appelé new_item
+menu_utilisateur = tkinter.Menu(menu, tearoff=0, font = ("", 10))
+
+# Configuration du sous-menu
+menu_utilisateur.add_command(label="Sélectionner", command=utilisateurSelectionner)
+menu_utilisateur.add_command(label="Créer", command=utilisateurCreer)
+menu_utilisateur.add_command(label="Editer", command=utilisateurEditer)
+menu_utilisateur.add_command(label="Supprimer", command=utilisateurSupprimer)
+menu_utilisateur.add_command(label="Statistiques", command=utilisateurStatistiques)
+menu_utilisateur.add_command(label="Partager", command=utilisateurPartager)
+
+# Assignation du sous-menu en cascade à menu
+menu.add_cascade(label='Utilisateur', menu=menu_utilisateur)
+
+
+########## Sous-menu Fichiers ##############
+# Instanciation d'un sous-menu de menu appelé new_item
+menu_fichier = tkinter.Menu(menu, tearoff=0, font = ("", 10))
+
+# Configuration du sous-menu
+menu_fichier.add_command(label="Créer", command=fichiersCreerLecon)
+menu_fichier.add_command(label="Ouvrir", command=fichiersOuvrirLecon)
+menu_fichier.add_command(label="Supprimer", command=fichiersSupprimerLecon)
+menu_fichier.add_command(label="Partager", command=fichiersPartagerLecon)
+
+# Assignation du sous-menu en cascade à menu
+menu.add_cascade(label="Leçons", menu=menu_fichier)
+
+
+########## Sous-menu Laboratoire ##############
+# Instanciation d'un sous-menu de menu appelé new_item
+menu_laboratoire = tkinter.Menu(menu, tearoff=0, font = ("", 10))
+
+# Configuration du sous-menu
+menu_laboratoire.add_command(label="Sélectionner lecon", command=laboratoireSelectionnerLecon)
+menu_laboratoire.add_command(label="Questions-Réponses courtes", command=laboratoireQuestionsReponsesCourtes)
+menu_laboratoire.add_command(label="Questions-Réponses choix multiples", command=laboratoireQuestionsChoixMultiples)
+menu_laboratoire.add_command(label="Quitter lecon", command=laboraoireFermerLecon)
+
+# Assignation du sous-menu en cascade à menu
+menu.add_cascade(label='Laboratoire', menu=menu_laboratoire)
+
+
+########## Sous-menu Options ##############
+# Instanciation d'un sous-menu de menu appelé new_item
+menu_Options = tkinter.Menu(menu, tearoff=0, font = ("", 10))
+
+# Configuration du sous-menu
+menu_Options.add_command(label="Préférences", command=optionsPreferences)
+menu_Options.add_command(label="Aide", command=optionsAide)
+menu_Options.add_command(label="A propos de", command=optionsAProposDe)
+
+# Assignation du sous-menu en cascade à menu
+menu.add_cascade(label='Options', menu=menu_Options)
+
+############# Quitter #################
+menu.add_command(label="Quitter", command = window.destroy)
+
+# Assignation de menu à window en barre de menu
+window.config(menu=menu)
+
+#####################################################################
+###################### Mise en place des frames #####################
+#####################################################################
+
+# Entête
+textTitre = "Memolab 21 a"
+bgFrameColor = "#007fff"
+fgFrameColor = "black"
+sizeLabelWidget = 12
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameEntete = tkinter.LabelFrame(window,text=textTitre, width = 800, height = "100")
+frameEntete.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameEntete.grid(row=0, column=0, columnspan=3)
+frameEntete.grid_propagate(0)
+
+# 
+textTitre = "Question :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameQuestion = tkinter.LabelFrame(window,labelwidget=titre, width = 300, height = "300")
+frameQuestion.grid(row=1, column=0)
+frameQuestion.grid_propagate(0)
+
+textTitre = "Réponse :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+FrameReponse = tkinter.LabelFrame(window,labelwidget=titre, width = 300, height = "300")
+FrameReponse.grid(row=1, column=1)
+FrameReponse.grid_propagate(0)
+
+textTitre = "Paramètres :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameParametres = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "300")
+frameParametres.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameParametres.grid(row=1, column=2)
+frameParametres.grid_propagate(0)
+
+textTitre = "Dialogues :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameDialogue = tkinter.LabelFrame(window,labelwidget=titre, width = 800, height = "200")
+frameDialogue.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameDialogue.grid(row=2, column=0, columnspan=3)
+frameDialogue.grid_propagate(0)
+
+textTitre = "Commandes :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameCommandes = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "600")
+frameCommandes.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameCommandes.grid(row=0, column=3, rowspan=3)
+frameCommandes.grid_propagate(0)
+
+# bouclage de la fenêtre window
+window.mainloop()
 
 
 

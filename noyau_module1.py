@@ -4,7 +4,27 @@ Created on Sun Feb 28 20:54:17 2021
 
 Noyau - Module 1
 
-Exceptionnellement sans classe
+Ce module est constitué de fonctions autonomes et donc sans structure
+de classes. Les données sont échangées par les paramètres en entrées et
+les valeurs retournées en sortie.
+
+Ces fonctions sont donc aussi exploitables depuis tous les autres modules
+sans rique de bouclages logique circulaire.
+
+INDEX DES FONCTIONS
+ouSuisJe():
+    cette fonction retourne le chemin complet du script en cours d'exécution
+chargeParametresGeneraux(nomFichierParametres):
+    Création et renvoi paraGen[] contenant les données de params_generaux.xlsx
+xlsx2List(nomFichierXlsx,listXlsx,paraGen):
+    Création et renvoi listXlsx[] contenant les données de nomFichierXlsx.xlsx
+list2Xlsx(listXlsx,nomFichierXlsx,paraGen):
+    Transfert du contenu d'une liste xlsx vers un fichier Excel 
+message(titreMessage, listMessages):
+    retourne le message correspondant à son titre
+extraitNomFichier(nomComplet):
+    Extraction du nom de fichier d'une chaine complète
+
 
 @author: JCV
 """
@@ -229,6 +249,21 @@ def message(titreMessage, listMessages):
             return listElement[2]
             break
     return "Message introuvable"
+
+def afficheMessageMultiLignes(titreMessage, message):
+    messageTitre = titreMessage
+    messageContenu = ""
+    messageContenu = message
+    import tkinter
+    fenTemp = tkinter.Tk()
+    fenTemp.title("Message...")
+    labelTitre = tkinter.Label(fenTemp,text=messageTitre)
+    labelTitre.grid(row=0, column=0)
+    fenMessage = tkinter.Message(fenTemp, text=messageContenu)
+    fenMessage.grid(row=1, column=0)
+    buttonOK = tkinter.Button(fenTemp,text="OK", command=fenTemp.destroy)
+    buttonOK.grid(row=2, column=0)
+    fenTemp.mainloop()
     
 def extraitNomFichier(nomComplet):
     """
@@ -258,6 +293,176 @@ def extraitNomFichier(nomComplet):
     
     return nomFichier
       
+####################### Comparaisons de chaînes de caractèers #############
+
+def CompareIdentique(mot1, mot2, EspacesExacts = False):
+    """
+    Compare deux chaines avec tolérance de différence d'espacements
+    entre les mots
+
+    Parameters
+    ----------
+    mot1 : TYPE Str
+        Premier mot à comparer
+    mot2 : TYPE Str
+        Second mot à comparer
+    EspacesExacts : Type Bool
+        Tient compte ou non du nombre d'espaces entre les mots et au début
+        et fin des chaînes
+
+    Returns
+    -------
+    TYPE Bool
+        Résultat de la comparaison
+
+    """
+    if not(EspacesExacts):
+        mot1 = mot1.split()
+        mot2 = mot2.split()
+    return mot1==mot2
+
+"""
+# test fonction
+mot1 = "Il était une fois une  histoire dont tout reste à inventer"
+mot2 = "Il était une fois une histoire dont tout reste à inventer"
+print(CompareIdentique(mot1, mot2, EspacesExacts = True))
+"""
+
+
+def CompareIdentiqueMinuscule(mot1, mot2,EspacesExacts = False):
+    """
+    Comparaison de deux chaînes converties en minuscules et optionnellement
+    sans tenir compte du nombre d'espaces entre les mots
+
+    Parameters
+    ----------
+    mot1 : Str
+        Premier mot à comparer
+    mot2 : Str
+        Second mot à comparer
+    EspacesExacts : Bool, optional
+        Prise en compte éventuelle du nombre d'espaces entre les mots.
+        The default is False.
+
+    TYPE Bool
+        Résultat de la comparaison
+
+    """
+    mot1 = mot1.casefold()
+    mot2 = mot2.casefold()
+    return CompareIdentique(mot1, mot2, EspacesExacts)
+
+"""
+# test fonction
+mot1 = "Il était une fois une Histoire  dont tout reste à inventer"
+mot2 = "Il était une fois une histoire dont tout reste à inventer"
+print(CompareIdentiqueMinuscule(mot1, mot2, EspacesExacts = True))
+"""
+
+
+def CompareDesordreExhaustif(chaine1, chaine2, casseExacte=False, nbMotsExacts=False):
+    """
+    Vérifie que tous les mots contenus dans une chaine soient présents dans
+    l'autre et réciproquement
+
+    Parameters
+    ----------
+    chaine1 : Str
+        Première chaîne comparée
+    chaine2 : Str
+        Seconde chaîne comparée
+    casseExacte : Bool, optional
+        Prise en compte de la casse . The default is False.
+    nbMotsExacts : bool, optional
+        Correspondance du nombre de chaque mot. The default is False.
+
+    Returns
+    -------
+    Trouve : bool
+        Résultat de la comparaison
+
+    """
+    # Mise optionnelle en minuscules
+    if not(casseExacte):
+        chaine1 = chaine1.casefold()
+        chaine2 = chaine2.casefold()
+    # Est-ce que tous les mots de chaine2 se retrouvent une ou plusieurs fois
+    # dans chaîne1 ?
+    # Extraction des mots de chaine2
+    dicoChaine2 = chaine2.split()
+    # Recherche de chaque mot de chaine2 dans chaine1
+    Trouve = True
+    for mot in dicoChaine2:
+        if not(mot in chaine1):
+            Trouve = False
+    # Est-ce que tous les mots de chaine1 se retrouvent une ou plusieurs fois
+    # dans chaîne2 ?
+    # Extraction des mots de chaine1
+    dicoChaine1 = chaine1.split()
+    # Recherche de chaque mot de chaine2 dans chaine1
+    for mot in dicoChaine1:
+        if not(mot in chaine2):
+            Trouve = False
+    # Vérif optionnelle du même nombre de mots identiques des deux côtés
+    if Trouve and nbMotsExacts:
+        for mot in dicoChaine1:
+            nbMotInChaine1 = chaine1.count(mot)
+            nbMotInChaine2 = chaine2.count(mot)
+            if nbMotInChaine1 != nbMotInChaine2:
+                Trouve = False
+
+    return Trouve
+
+"""
+# test fonction
+mot1 = "Il était une fois une histoire dont tout reste à inventer"
+mot2 = "Il était une fois une histoire dont tout reste à inventer"
+print(CompareDesordreExhaustif(mot1, mot2, casseExacte = True, nbMotsExacts = True))
+"""
+
+
+def CompareAuMoinsUnMotCommun(chaine1, chaine2, casseExacte=False):
+    """
+    Véréfie si dans chaîne1 et chaine2 se trouve au moins un mot commun,
+    tenant compte optionnellement compte de la casse, et ne tenant pas
+    compte des espaces entre les mots
+
+    Parameters
+    ----------
+    chaine1 : Str
+        Première chaine de caractères
+    chaine2 : Str
+        Seconde chaîne de caractères
+    casseExacte : bool, optional
+        prise en compte de la casse. The default is False.
+
+    Returns
+    -------
+    Trouve : bool
+        Renvoie True si un mot au moins a été trouvé.
+
+    """
+     # Mise optionnelle en minuscules
+    if not(casseExacte):
+        chaine1 = chaine1.casefold()
+        chaine2 = chaine2.casefold()
+    # Est-ce que un mot de chaine2 se retrouve dans chaine1 ?
+    # Extraction des mots de chaine2
+    dicoChaine2 = chaine2.split()
+    # Recherche de chaque mot de chaine2 dans chaine1
+    Trouve = False
+    for mot in dicoChaine2:
+        if mot in chaine1:
+            Trouve = True
+
+    return Trouve
+
+"""
+# test fonction
+chaine1 = "une"
+chaine2 = "Il était une fois une histoire dont tout reste à inventer"
+print(CompareAuMoinsUnMotCommun(chaine1, chaine2, casseExacte=False))
+"""
     
     
     
