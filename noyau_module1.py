@@ -250,20 +250,71 @@ def message(titreMessage, listMessages):
             break
     return "Message introuvable"
 
-def afficheMessageMultiLignes(titreMessage, message):
-    messageTitre = titreMessage
-    messageContenu = ""
-    messageContenu = message
+def afficheMessageMultiLignes(titreMessage,texteAAfficher, aspect=200, taillePoliceCar=12):
+
+    # Constantes
+    # titreMessage = "Il était une fois..."
+    # taillePoliceCar = 12        # taille standard 10
+    # aspect = 150                # rapper largeur / hauteur * 100 (en caractères)
+    largeurCaractereEnPix = 10   # en taille standard
+    hauteurCaractereEnPix = 12  # en taille standard
+    
+    # Calculs
+    import math
+    nbCaracteres = len(texteAAfficher)
+    largeurEnCaracteres = int(math.sqrt(aspect*nbCaracteres/100)) + 3
+    hauteurEnLignes = int(nbCaracteres / largeurEnCaracteres) + 2
+    facteurTaillePoliceCaractere = taillePoliceCar / 10
+    largeurEnPixFenetre = int(largeurEnCaracteres * largeurCaractereEnPix * facteurTaillePoliceCaractere)
+    nbCarTitre = len(titreMessage)
+    nbPixTitre = largeurEnPixFenetre * int(nbCarTitre*facteurTaillePoliceCaractere/largeurEnCaracteres)
+    print("nbCarTitre={} | nbPixTitre = {} ".format(nbCarTitre, nbPixTitre))
+    print("facteurTaillePoliceCaractere = {}".format(facteurTaillePoliceCaractere))
+    largeurEnPixTitre = int(nbPixTitre)
+    print("largeurEnPixFenetre = {} , largeurEnPixTitre = {}".format(largeurEnPixFenetre,largeurEnPixTitre))
+    largeurEnPix=max(largeurEnPixFenetre,largeurEnPixTitre)
+    hauteurEnPix = int(hauteurEnLignes * hauteurCaractereEnPix * facteurTaillePoliceCaractere)
+    hauteurAvecTitre = hauteurEnPix + 20
+    hauteurAvecBouton = hauteurAvecTitre + 30
+    
+    print("largeurEnCaracteres={}".format(largeurEnCaracteres))
+    print("hauteurEnLignes={}".format(hauteurEnLignes))
+    print("largeurEnPix={}".format(largeurEnPix))
+    print("hauteurAvecBouton={}".format(hauteurAvecBouton))
+    
     import tkinter
-    fenTemp = tkinter.Tk()
-    fenTemp.title("Message...")
-    labelTitre = tkinter.Label(fenTemp,text=messageTitre)
-    labelTitre.grid(row=0, column=0)
-    fenMessage = tkinter.Message(fenTemp, text=messageContenu)
-    fenMessage.grid(row=1, column=0)
-    buttonOK = tkinter.Button(fenTemp,text="OK", command=fenTemp.destroy)
-    buttonOK.grid(row=2, column=0)
-    fenTemp.mainloop()
+    fenetre = tkinter.Tk()
+    # Centrage de la fenêtre
+    largeurEcran = int(fenetre.winfo_screenwidth())
+    hauteurEcran = int(fenetre.winfo_screenheight())
+    largeurFenetre = largeurEnPix
+    hauteurFenetre = hauteurAvecBouton
+    positionX = largeurEcran // 2 - largeurFenetre // 2
+    positionY = hauteurEcran // 2 - hauteurFenetre // 2
+    paramGeometry = "{}x{}+{}+{}".format(largeurFenetre,hauteurFenetre,positionX,positionY)
+    fenetre.geometry(paramGeometry)
+    fenetre.title(titreMessage)
+    fenetre.pack_propagate(False)       # gèle l'autoadaptation de la fenêtre au contenu.
+    
+    labelTitre = tkinter.Label(fenetre,text=titreMessage, font=("",taillePoliceCar+1))
+    labelTitre.grid(row=0,column=0,sticky="N")
+    
+    messageAffiche = tkinter.Message(fenetre,
+                                     text=texteAAfficher,
+                                     aspect=aspect,
+                                     font=("", taillePoliceCar))
+    messageAffiche.grid(row=1,column=0,sticky="W")
+    
+    boutonOk = tkinter.Button(fenetre, text = "OK", command=fenetre.destroy)
+    boutonOk.grid(row=2,column=0,sticky="S")
+    
+    fenetre.mainloop()
+
+
+    
+
+
+
     
 def extraitNomFichier(nomComplet):
     """
