@@ -246,67 +246,107 @@ def message(titreMessage, listMessages):
         #    print("titre : {} \n Type(titre) : {} ".format(titre, type(titre)))
         if titre == titreMessage:
             #    print("Trouvé !")
-            return listElement[2]
+            # cherche \n dans le message
+            message = str(listElement[2])
+            print(message)
+            pos = message.find("\\n")
+            if pos > 0:
+                print("Remplacements de \\n par des \n")
+                message = message.replace("\\n","\n")
+                message = message.replace("\\","")
+                print(message)
+            print(pos)
+            return message
             break
     return "Message introuvable"
 
-def afficheMessageMultiLignes(titreMessage,texteAAfficher, aspect=200, taillePoliceCar=12):
-
-    # Constantes
-    # titreMessage = "Il était une fois..."
-    # taillePoliceCar = 12        # taille standard 10
-    # aspect = 150                # rapper largeur / hauteur * 100 (en caractères)
-    largeurCaractereEnPix = 10   # en taille standard
-    hauteurCaractereEnPix = 12  # en taille standard
-    
-    # Calculs
-    import math
-    nbCaracteres = len(texteAAfficher)
-    largeurEnCaracteres = int(math.sqrt(aspect*nbCaracteres/100)) + 3
-    hauteurEnLignes = int(nbCaracteres / largeurEnCaracteres) + 2
-    facteurTaillePoliceCaractere = taillePoliceCar / 10
-    largeurEnPixFenetre = int(largeurEnCaracteres * largeurCaractereEnPix * facteurTaillePoliceCaractere)
-    nbCarTitre = len(titreMessage)
-    nbPixTitre = largeurEnPixFenetre * int(nbCarTitre*facteurTaillePoliceCaractere/largeurEnCaracteres)
-    print("nbCarTitre={} | nbPixTitre = {} ".format(nbCarTitre, nbPixTitre))
-    print("facteurTaillePoliceCaractere = {}".format(facteurTaillePoliceCaractere))
-    largeurEnPixTitre = int(nbPixTitre)
-    print("largeurEnPixFenetre = {} , largeurEnPixTitre = {}".format(largeurEnPixFenetre,largeurEnPixTitre))
-    largeurEnPix=max(largeurEnPixFenetre,largeurEnPixTitre)
-    hauteurEnPix = int(hauteurEnLignes * hauteurCaractereEnPix * facteurTaillePoliceCaractere)
-    hauteurAvecTitre = hauteurEnPix + 20
-    hauteurAvecBouton = hauteurAvecTitre + 30
-    
-    print("largeurEnCaracteres={}".format(largeurEnCaracteres))
-    print("hauteurEnLignes={}".format(hauteurEnLignes))
-    print("largeurEnPix={}".format(largeurEnPix))
-    print("hauteurAvecBouton={}".format(hauteurAvecBouton))
-    
+def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, editeOK=True):
     import tkinter
+    import math
+    
+    # Déclarations
+    largeurCaractereEnPix = 9   # en taille standard
+    hauteurCaractereEnPix = 10  # en taille standard
+    
+    # calculs taille de la fenêtre
+    nbCaracteres = len(message) ** 1.15
+    largeurEnCaracteres = max(int(math.sqrt(aspect*nbCaracteres/100)),15)
+    hauteurEnLignes = max(int(nbCaracteres / largeurEnCaracteres) + 2, 20)
+    facteurTaillePoliceCaractere = taillePoliceCar / 10
+    largeurEnPix = int(largeurEnCaracteres * largeurCaractereEnPix * facteurTaillePoliceCaractere)
+    hauteurEnPix = int(hauteurEnLignes * hauteurCaractereEnPix * facteurTaillePoliceCaractere)
+
+    print("nbCaracteres = {}".format(nbCaracteres))
+    print("largeurEnCaracteres = {}".format(largeurEnCaracteres))
+    print("hauteurEnLignes = {}".format(hauteurEnLignes))
+    print("facteurTaillePoliceCaractere = {}".format(facteurTaillePoliceCaractere))
+    print("largeurEnPix = {}".format(largeurEnPix))
+    print("hauteurEnPix = {}".format(hauteurEnPix))
+
+    # Création fenetre
     fenetre = tkinter.Tk()
-    # Centrage de la fenêtre
+    fenetre.configure(width=largeurEnPix,height=hauteurEnPix)
+    fenetre.pack_propagate(False)   # gèle la taille de la fenêtre à sa consigne
+    fenetre.title(titre)
+
+    # Centrage fenêtre
     largeurEcran = int(fenetre.winfo_screenwidth())
     hauteurEcran = int(fenetre.winfo_screenheight())
     largeurFenetre = largeurEnPix
-    hauteurFenetre = hauteurAvecBouton
+    hauteurFenetre = hauteurEnPix
     positionX = largeurEcran // 2 - largeurFenetre // 2
     positionY = hauteurEcran // 2 - hauteurFenetre // 2
     paramGeometry = "{}x{}+{}+{}".format(largeurFenetre,hauteurFenetre,positionX,positionY)
     fenetre.geometry(paramGeometry)
-    fenetre.title(titreMessage)
-    fenetre.pack_propagate(False)       # gèle l'autoadaptation de la fenêtre au contenu.
+
+
+    # Création objet scrollbar
+    scrollbar = tkinter.Scrollbar(fenetre)
     
-    labelTitre = tkinter.Label(fenetre,text=titreMessage, font=("",taillePoliceCar+1))
-    labelTitre.grid(row=0,column=0,sticky="N")
+    # Création widget Text avec sa scrollbar verticale associée
+    texte = tkinter.Text(fenetre, yscrollcommand=scrollbar.set)
+    scrollbar.config(command=texte.yview)
+    scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
     
-    messageAffiche = tkinter.Message(fenetre,
-                                     text=texteAAfficher,
-                                     aspect=aspect,
-                                     font=("", taillePoliceCar))
-    messageAffiche.grid(row=1,column=0,sticky="W")
+    # Configuration du visuel du text
+    texte.configure(font=("Helvetica",taillePoliceCar))
+    texte.configure(padx=10, pady=20)
+    texte.configure(wrap="word")
+   
+    # Droit modifier le contenu du texte
+    if editeOK:
+        texte.config(state="normal")
+    else:
+        texte.config(state="disabled")
     
-    boutonOk = tkinter.Button(fenetre, text = "OK", command=fenetre.destroy)
-    boutonOk.grid(row=2,column=0,sticky="S")
+    # Assignation du titre et du message à Text
+    """ 
+    Le premier paramètre 1.0 indique la position d'insertion du texte ou autre
+    objet inséré. 1 désigne le numéro de ligne et 0 le numéro de colonne.
+    Alternativemement, pour ajouter à la fin du contenu de Text, on peut
+    utiliser tkinter.END
+    """
+    texte.insert(1.0, titre)
+    texte.insert(tkinter.END,"\n\n"+message)
+
+    # mise en gras du titre
+    texte.tag_add("debutEnGras",1.0, "1."+str(len(titre)))
+    texte.tag_config("debutEnGras", font=("Helvetica",taillePoliceCar, "bold"))
+    texte.update()
+    
+    # Bouton quitter
+    boutonQuitter = tkinter.Button(fenetre, text="OK", command = fenetre.destroy)
+    boutonQuitter.pack(side=tkinter.BOTTOM)
+    
+    # pack du Text avec fill
+    """
+    Le paramètre fill indique la direction d'expansion du widget. Les 
+    valeurs possibles sont: 
+        tkinter.X en largeur
+        tkinter.Y en hauteur
+        tkinter.BOTH enlargeur et hauteur
+    """    
+    texte.pack(expand=tkinter.YES, fill=tkinter.X)
     
     fenetre.mainloop()
 
