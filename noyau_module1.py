@@ -260,7 +260,7 @@ def message(titreMessage, listMessages):
             break
     return "Message introuvable"
 
-def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, editeOK=True):
+def annonce(titre, message, aspect=200, taillePoliceCar=12, editeOK=False, couleur="#ffffff"):
     import tkinter
     import math
     
@@ -275,13 +275,6 @@ def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, ed
     facteurTaillePoliceCaractere = taillePoliceCar / 10
     largeurEnPix = int(largeurEnCaracteres * largeurCaractereEnPix * facteurTaillePoliceCaractere)
     hauteurEnPix = int(hauteurEnLignes * hauteurCaractereEnPix * facteurTaillePoliceCaractere)
-
-    print("nbCaracteres = {}".format(nbCaracteres))
-    print("largeurEnCaracteres = {}".format(largeurEnCaracteres))
-    print("hauteurEnLignes = {}".format(hauteurEnLignes))
-    print("facteurTaillePoliceCaractere = {}".format(facteurTaillePoliceCaractere))
-    print("largeurEnPix = {}".format(largeurEnPix))
-    print("hauteurEnPix = {}".format(hauteurEnPix))
 
     # Création fenetre
     fenetre = tkinter.Tk()
@@ -310,14 +303,13 @@ def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, ed
     
     # Configuration du visuel du text
     texte.configure(font=("Helvetica",taillePoliceCar))
-    texte.configure(padx=10, pady=20)
+    texte.configure(padx=20, pady=20)
     texte.configure(wrap="word")
+    texte.configure(bg=couleur)
    
     # Droit modifier le contenu du texte
-    if editeOK:
-        texte.config(state="normal")
-    else:
-        texte.config(state="disabled")
+    if not editeOK:
+        texte.bind("<Key>", lambda a: "break")
     
     # Assignation du titre et du message à Text
     """ 
@@ -334,9 +326,16 @@ def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, ed
     texte.tag_config("debutEnGras", font=("Helvetica",taillePoliceCar, "bold"))
     texte.update()
     
-    # Bouton quitter
-    boutonQuitter = tkinter.Button(fenetre, text="OK", command = fenetre.destroy)
-    boutonQuitter.pack(side=tkinter.BOTTOM)
+    # Frame des boutons
+    frameBoutons = tkinter.Frame(fenetre)
+    frameBoutons.pack(side=tkinter.BOTTOM)
+    
+    # Boutons
+    boutonCancel = tkinter.Button(frameBoutons, text="Concel", command = fenetre.destroy)
+    boutonCancel.grid(row=0, column=0)
+    boutonQuitter = tkinter.Button(frameBoutons, text="OK", command = fenetre.destroy)
+    boutonQuitter.grid(row=0, column=1)
+    
     
     # pack du Text avec fill
     """
@@ -350,9 +349,86 @@ def afficheMessageMultiLignes(titre, message, aspect=200, taillePoliceCar=12, ed
     
     fenetre.mainloop()
 
+def __afficheQuestionSaisiReponse(question, largeurQuestion=640):
+    """
+    Cette fonction est strictement au service de la fonction questionne() ci-dessous.
+    Elle affiche une fenêtre popup contenuant une question (text seulement).
+    Elle ouvre un champ de saisie d'un text multi lignes pour la réponse.
+    Cette réponse est ensuite écrite dans un fichier temporaire temp.txt afin
+    d'être récupérée par la fonction appelante. Ainsi est contourné le défi
+    de persistance des données aussi éphémères que les widgets qui les utilisent.
 
+    Parameters
+    ----------
+    question : str
+        texte de la question posée
+    largeurQuestion : str, optional
+        The default is 640.
+        Largeur en pixels du widget Message qui affiche la question et détermine
+        également la largeur de la fen^tre et du widget Text de la réponse 
+        situé dessous.
+
+    Returns
+    -------
+    None.
+
+    """
+    import time
+    import tkinter
+    fenetre = tkinter.Tk()
     
+    def __afficheQuestion(fenetre,question):
+        messageQuestion = tkinter.Message(fenetre,
+                                          text=question,
+                                          width=largeurQuestion)
+        messageQuestion.grid(row=0, column=0)
+        
+    def __SaisiReponse(fenetre):
+        
+        def __getText():
+            reponse=textReponse.get(1.0, "end")
+            with open("temp.txt", "w") as filout:
+                for ligne in reponse:
+                    filout.write(ligne)
+            
+            """
+            dbmFile['Reponse'] = reponse
+            dbmFile.close()
+            """
+            
+            textReponse.destroy()
+            time.sleep(1)
+            fenetre.destroy() 
+        
+        textReponse = tkinter.Text(fenetre, wrap="word", pady=20, padx=20)
+        textReponse.grid(row=1,column=0)
+        buttonSaveAndQuit = tkinter.Button(fenetre,text="Save & Quit", command=__getText)
+        buttonSaveAndQuit.grid(row=2, column=0)
+    
+    __afficheQuestion(fenetre,question)
+    __SaisiReponse(fenetre)
+    
+    fenetre.mainloop()
+    
+def questionne(question):
+    __afficheQuestionSaisiReponse(question)
 
+    reponse = ""
+    with open("temp.txt", "r") as filin:
+        ligne = filin.readline()
+        while ligne != "":
+            reponse += ligne
+            ligne = filin.readline()
+
+    # print(reponse)
+    return reponse
+
+""" # programme de test et démonstration
+if __name__ == "__main__":
+    
+    reponse = questionne("Qui es-tu ?")
+    print(reponse)
+"""  
 
 
     
@@ -548,12 +624,19 @@ def CompareAuMoinsUnMotCommun(chaine1, chaine2, casseExacte=False):
 
     return Trouve
 
-"""
-# test fonction
-chaine1 = "une"
-chaine2 = "Il était une fois une histoire dont tout reste à inventer"
-print(CompareAuMoinsUnMotCommun(chaine1, chaine2, casseExacte=False))
-"""
+
+# =============================== TESTS LOCAUX ========================
+
+if __name__ == '__main__':
+    
+    # test questionne()
+    
+    titre = "Question"
+    question = "En quelle années est-ce que Jean-Claude Vouillamoz et Suzanne se sont-ils marés et où ?"
+    
+    reponseRecue = questionne(titre, question)
+    
+    print(reponseRecue)
     
     
     
