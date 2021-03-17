@@ -28,7 +28,7 @@ extraitNomFichier(nomComplet):
 
 @author: JCV
 """
-#%% Récupération chemin actuel du script
+# Récupération chemin actuel du script
 def ouSuisJe():
     """
     cette fonction retourne le chemin complet du script en cours d'exécution'
@@ -91,7 +91,7 @@ def chargeParametresGeneraux(nomFichierParametres):
     # print("JeanClaude =", JeanClaude)
     return paraGen
 
-def xlsx2List(nomFichierXlsx,listXlsx,paraGen):
+def xlsx2List(nomFichierXlsx,listXlsx,paraGen,cheminRelXlsx="/data"):
     """ Transfert du contenu de la feuille xlsx vers la liste 
     
     Paramètres:
@@ -114,7 +114,7 @@ def xlsx2List(nomFichierXlsx,listXlsx,paraGen):
     """
     # Etablissement du nom de fichier xlsx complet
     racineChemin = ouSuisJe()
-    racineCheminSRep = racineChemin + paraGen["cheminMessages"] + "/"
+    racineCheminSRep = racineChemin + cheminRelXlsx + "/"
     nomXlsxComplet = racineCheminSRep + nomFichierXlsx
     
     # accès au fichier excel et à sa feuille active
@@ -145,7 +145,7 @@ if paraGen["imprimeOK"]:
 """ # ###################################################    
     
 
-def list2Xlsx(listXlsx,nomFichierXlsx,paraGen):
+def list2Xlsx(listXlsx,nomFichierXlsx,paraGen,cheminRelXlsx="/data"):
     """ Transfert du contenu d'une liste xlsx vers un fichier Excel 
     
     Paramètres:
@@ -168,7 +168,7 @@ def list2Xlsx(listXlsx,nomFichierXlsx,paraGen):
     """    
     # Etablissement du nom de fichier xlsx complet
     racineChemin = ouSuisJe()
-    racineCheminSRep = racineChemin + paraGen["cheminData"] + "/"
+    racineCheminSRep = racineChemin + cheminRelXlsx + "/"
     nomXlsxComplet = racineCheminSRep + nomFichierXlsx
     # if paraGen["imprimeOK"]:
     #     print("xlsx2List : nomXlsxComplet : {}".format(nomXlsxComplet))
@@ -189,10 +189,13 @@ def list2Xlsx(listXlsx,nomFichierXlsx,paraGen):
     """
     nbreLignes = len(listXlsx)
     nbreColonnes = len(listXlsx[0])
+    print("Module 1 : nbreLignes : ", nbreLignes)
+    print("Module 1 : nbreColonnes : ", nbreColonnes)
+    
 
     # boucle écriture
-    for ligne in range(1,nbreLignes):
-        for colonne in range(1,nbreColonnes):
+    for ligne in range(1,nbreLignes+1):
+        for colonne in range(1,nbreColonnes+1):
             ws.cell(row=ligne, column=colonne, value=listXlsx[ligne-1][colonne-1])
     
     # Sauvegarde de la feuille excel modifiée
@@ -459,6 +462,20 @@ def extraitNomFichier(nomComplet):
     # print(nomFichier)
     
     return nomFichier
+
+# Création nom de fichier à partir d'un nom d'utilisateur quelconque
+def creaNomFichier(nomUtilisateur):
+    # Caractères utilisables dans nomUtilisateur
+    carUtilisables="abcdefghijklmnopqrstuvwxyz1234567890"
+    # boucle filtrage nomUtilisateur
+    nomFichier = ""
+    for car in nomUtilisateur:
+        if car.lower() in carUtilisables:
+            nomFichier += car.lower()
+    nomFichier += ".xlsx"
+
+    return nomFichier
+
       
 ####################### Comparaisons de chaînes de caractèers #############
 

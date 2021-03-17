@@ -63,12 +63,12 @@ listMessages = biblio1.xlsx2List("messages.xlsx", listMessages, paraGen)
 # Instanciation de biblio2 pour avoir accès à toutes ses méthodes
 # et attributs à portée de ce script (objet de portée de ce script)
 import noyau_module2 as biblio2
-xBiblio2 = biblio2.ClassModule2(paraGen, listMessages)
+biblio2.ClassModule2(paraGen, listMessages)
 
 # Instanciation de biblio3 pour avoir accès à toutes ses méthodes
 # et attributs à portée de ce script (objet de portée de ce script)
 import noyau_module3 as biblio3
-xBiblio3 = biblio3.ClassModule3(paraGen)
+biblio3.ClassModule3(paraGen)
 
 # Assignation optionnelle de variables accessible dans ce script
 imprimeOK = paraGen["imprimeOK"]    # Flag d'impression optionnelle vers la console
@@ -76,6 +76,8 @@ imprimeOK = paraGen["imprimeOK"]    # Flag d'impression optionnelle vers la cons
 # test mise au point imprime message
 testMessage = biblio1.message("Salut", listMessages)
 print(testMessage)
+
+# test lancement activité d'une classe de biblio2
 
 
 """ SELECTION UTILISATEUR 
@@ -85,7 +87,15 @@ est situé dans le sous-répertoire /utilisateurs (paraGen["cheminUtilisateurs"]
 Il contient les données d'identification ainsi que le nom d'un fichier personnel
 de journalisation des performances et résultats.
 """
-# xBiblio2.selectionUtilisateur()
+
+# Connexion de l'utilisateur à Memolab
+user = biblio2.Utilisateur()     # création objet de class utilisateur
+listUtilisateur = user.fenetreSelectionUtilisateur()
+print("Finalement : ",listUtilisateur)
+
+
+
+
 
 # ========================== G U I de MEMOLAB ==========================
 
@@ -159,7 +169,7 @@ def utilisateurSelectionner():
     messageTitre = "Sélection utilisateur actif..."
     messageContenu = ""
     messageContenu += "Bienvenue " + nomUtilisateurActif + " !" + "\n"
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
     
 
     return nomUtilisateurActif
@@ -178,12 +188,12 @@ def utilisateurCreer():
     # informations d'accès
     messageTitre = "Menu-Création d'un nouvel utilisateur"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 def utilisateurEditer():
     messageTitre = "Menu - Editer les données d'un utilisateur"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu, aspect=100)
 
 def utilisateurSupprimer():
     # Saisie nom d'utilisateur
@@ -201,18 +211,18 @@ def utilisateurSupprimer():
     messageContenu = ""
     messageContenu += "Le fichier de l'utilisateur confirmé" + "\n"
     messageContenu += "a été supprimé." + "\n"
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 def utilisateurStatistiques():
     messageTitre = "Menu - Utilisateur statistiques"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 def utilisateurPartager():
     messageTitre = "Menu - Utilisateur partager"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 #-----------------------
@@ -220,25 +230,25 @@ def utilisateurPartager():
 def fichiersCreerLecon():
     messageTitre = "Menu - Création fichier de lecon"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 def fichiersOuvrirLecon():
     messageTitre = "Menu - Ouvrir lecon"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 def fichiersSupprimerLecon():
     messageTitre = "Menu - Supprimer une lecon"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 def fichiersPartagerLecon():
     messageTitre = "Menu - Partager une lecon"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 
 #-------------
@@ -273,13 +283,13 @@ def laboratoireQuestionsReponsesCourtes():
     messageTitre = "Questions réponses courtes..."
     messageContenu = ""
     messageContenu += "En cours de développement..."
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
 
 def laboratoireQuestionsChoixMultiples():
     messageTitre = "Questions à choix multiples..."
     messageContenu = ""
     messageContenu += "En cours de développement..."
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu)
     
 def laboraoireFermerLecon():
     # Réinitialiser liste leconEnCours
@@ -295,18 +305,18 @@ def laboraoireFermerLecon():
 def optionsPreferences():
     messageTitre = "Menu - Options préférences"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu, couleur="#b2744b")
 
 def optionsAide():
     messageTitre = "Aide..."
     messageContenu = ""
-    messageContenu += "En cours de développement..."
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    messageContenu += "En cours de développement...                         "
+    biblio1.annonce(messageTitre, messageContenu, aspect=300, couleur="#b2744b")
 
 def optionsAProposDe():
     messageTitre = "Menu - A propos de"
     messageContenu = biblio1.message(messageTitre, listMessages)
-    biblio1.afficheMessageMultiLignes(messageTitre, messageContenu)
+    biblio1.annonce(messageTitre, messageContenu, aspect=100, couleur="#b2744b")
 
 
 
@@ -393,7 +403,7 @@ window.config(menu=menu)
 
 # Entête
 textTitre = "Memolab 21 a"
-bgFrameColor = "#007fff"
+bgFrameColor = "#f29f66"
 fgFrameColor = "black"
 sizeLabelWidget = 12
 titre = tkinter.Label(text = textTitre, font=("", 12))
