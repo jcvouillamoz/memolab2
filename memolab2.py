@@ -88,11 +88,19 @@ Il contient les données d'identification ainsi que le nom d'un fichier personne
 de journalisation des performances et résultats.
 """
 
+
+
+
 # Connexion de l'utilisateur à Memolab
 user = biblio2.Utilisateur()     # création objet de class utilisateur
 listUtilisateur = user.fenetreSelectionUtilisateur()
 print("Finalement : ",listUtilisateur)
-
+# Mise en liste du fichier personnel de l'utilisateur, avec sa liste de 
+# leçons en cours. Si le fichier n'existe pas il est recréé par copie du 
+# modele présent dans le même répertoire.
+listFichierUtilisateur = user.miseEnListFichierUtilisateur(listUtilisateur[3])
+# affiche liste des lecons en cours
+biblio1.afficheListEnTable(listFichierUtilisateur)
 
 
 
@@ -254,28 +262,8 @@ def fichiersPartagerLecon():
 #-------------
 
 def laboratoireSelectionnerLecon():
-    # Sélection fichier de lecon à étudier
-    # import lecon
-    # xLecon = lecon.Lecon(paraGen)      # Instanciation objet Lecon
+    print("Sélection Leçons de l'utilisateur")
 
-    # Widget affichage Nom de la leçon en cours
-    nomLeconEnCours = xLecon.selectLeconEnCours(paraGen)
-    nomFichier = biblio1.extraitNomFichier(nomLeconEnCours)
-    xGUI.afficheNomLeconEnCours(frameEntete, nomFichier)    
-    
-    # Widget affichage Nombre de questions de la leçon en cours
-    nbQuestionsLeconEnCours = xLecon.nbreTotalQuestions
-    strNbQuestionsLeconEnCours = str(nbQuestionsLeconEnCours)
-    xGUI.afficheNbQuestLeconEnCours(frameEntete, strNbQuestionsLeconEnCours) 
-   
-    #############  test accessibilité aux méthodes  ##################
-    questionTiree = xLecon.tirerUneQuestionAuHasard(xLecon.leconEnCours)
-    jcvt.imprime("Question tirée au hasard : {}".format(questionTiree), imprimeOK)
-    # print("Question tirée au hasard : {}".format(questionTiree))
-    
-    # leconTraitee = xLecon.supprimerQuestion(xLecon.leconEnCours, 5)
-    # print("Leçon traitée : {}".format(leconTraitee))
-    # leconTraitee = xLecon.supprimerQuestion(leconTraitee, 5)
     
     ##################################################################
 
@@ -292,12 +280,7 @@ def laboratoireQuestionsChoixMultiples():
     biblio1.annonce(messageTitre, messageContenu)
     
 def laboraoireFermerLecon():
-    # Réinitialiser liste leconEnCours
-    xLecon.leconEnCours = []
-    xLecon.nbreTotalQuestions = 0
-    # Supprimer les deux widgets nomLecon et nb de questions
-    xGUI.supprimerNomLeconEnCours()
-    xGUI.supprimerNbQuestLeconEnCours()
+    print("Fermeture leçon en cours")
 
 
 #-------------

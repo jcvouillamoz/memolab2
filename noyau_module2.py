@@ -53,6 +53,8 @@ class Utilisateur():
                                                           listUtilisateurs, 
                                                           ClassModule2.paraGen, 
                                                           cheminFichierXlsx)
+        # Création liste des utilisateurs sans la ligne d'entête ni des lignes 
+        # vides. C'est une "épuration".
         listUtilisateurs2 = []
         for ligne in listUtilisateurs:
             if ligne[0] != None and ligne[0] != "numPos":
@@ -90,8 +92,9 @@ class Utilisateur():
         def updateLabel():
             indexSelection = listBoxUtilisateur.curselection()[0]
             listUtilisateur = listUtilisateurs[indexSelection]
-            print(listUtilisateur, type(listUtilisateur))
-            
+            # print(listUtilisateur, type(listUtilisateur))
+            # Sauvegardse dans un fichier binaire persistant de la ligne
+            # de données de l'utilisateur sélectionné.
             import pickle
             pickle.dump(listUtilisateur, open('tempUser.bin', 'wb'))
             
@@ -129,26 +132,31 @@ class Utilisateur():
             return False                
         
         def updateNewUser():
+            # initialisation des 4 champs de la liste Utilisateurs
             pos = len(listUtilisateurs)+1
             pseudo = xPseudo.get()
             prenomNom = xPrenomNom.get()
             nomFichier = ClassModule2.biblio1.creaNomFichier(prenomNom)
+            # ajout nouvel utilisateur si son nom de fichier est nouveau
             if not __trouveUserFileInListUtilisateurs(nomFichier):
-                listUtilisateurs.append([pos,pseudo,prenomNom,nomFichier])
+                # reconstitution de la list au format du fichier xlsx
                 listEntete = ["numPos","pseudo","prenomNom","fichierUtilisateur"]
-                print("updateNewUser : listEntete :", listEntete)
+                listUtilisateurs.append([pos,pseudo,prenomNom,nomFichier])
                 listUtilisateurs3 = []
                 listUtilisateurs3.append(listEntete)
                 for element in listUtilisateurs:
                     listUtilisateurs3.append(element)
-                print("updateNewUser : listUtilisateurs3 :", listUtilisateurs3)
-                print("updateNewUser : len(listUtilisateurs3) :", len(listUtilisateurs3))
-                listUtilisateur = listUtilisateurs3[len(listUtilisateurs3)-1]
-                print("updateNewUser : listUtilisateur : ",listUtilisateur)
+
+                # mise à jour du fichier xlsx des utilisateurs
                 ClassModule2.biblio1.list2Xlsx(listUtilisateurs3, 
                                                        nomFichierXlsx, 
                                                        ClassModule2.paraGen,
                                                        cheminFichierXlsx)
+                # création liste des données de l'utilisateur sélectionné
+                listUtilisateur = listUtilisateurs3[len(listUtilisateurs3)-1]
+                
+                # sauvegarde en fichier binaire pour la persistance de 
+                # cette liste une fois supprimé l'objet fenetre
                 import pickle
                 pickle.dump(listUtilisateur, open('tempUser.bin', 'wb'))
 
@@ -160,27 +168,72 @@ class Utilisateur():
                                                     command=updateNewUser)
         boutonEnregistre.grid(row=2, column=0, columnspan=2, sticky="ew")
         
-        
-        
-        
-        
-        
-        
-
-        
+        ###############################
         
         fenetre.mainloop()
         
+    
     def fenetreSelectionUtilisateur(self):
         import os
         import pickle
         
+        # exécution de la méthode de sélection / création d'utilisateur
+        # qui va déposer dans un fichier binaire la liste des données
+        # de l'utilisateur sélectionné.
         self.__fenetreSelectionUtilisateur()
         
-        listUtilisateur = pickle.load(open('tempUser.bin', 'rb'))
-        print("Depuis fin de module2 : ", listUtilisateur)
+        # récupération de la liste des données de l'utilisateur sélectionné
+        listUtilisateur = []
+        try:
+            listUtilisateur = pickle.load(open('tempUser.bin', 'rb'))
+            # print("Depuis fin de module2 : ", listUtilisateur)
+            os.remove('tempUser.bin')
+        except:
+            pass
         
         return listUtilisateur
+    
+    def miseEnListFichierUtilisateur(self,nomFichierUtilisateur):
+        """
+        
+        Parameters
+        ----------
+        nomFichierUtilisateur : str
+            nom complet du fichier de l'utilisateur
+
+        Returns
+        -------
+        listfichierUtilisateur
+
+        """
+        import os
+        import shutil
+        import time
+        cheminRacine = ClassModule2.biblio1.ouSuisJe()
+        print("cheminRacine=",cheminRacine)
+        cheminFichierUtilisateur = ClassModule2.paraGen["cheminUtilisateurs"]
+        print("cheminUtilisateur=", cheminFichierUtilisateur)
+        print(nomFichierUtilisateur)
+        aOuvrir = cheminRacine + cheminFichierUtilisateur + "/" + nomFichierUtilisateur
+        print("aOuvrir=",aOuvrir)
+        trouve = os.path.exists(aOuvrir)
+        print("trouve=",trouve)
+        if not trouve:
+            # copie du fichier utilisateur_modele.xlsx vers aOuvrir
+            source = cheminRacine + cheminFichierUtilisateur + "/utilisateur_modele.xlsx"
+            cible = aOuvrir
+            shutil.copy(source,cible)
+            time.sleep(3)
+        # mise en list du fichier trouvé
+        nomFichierXlsx = nomFichierUtilisateur
+        listXlsx = []
+        listFichierUtilisateur = ClassModule2.biblio1.xlsx2List(nomFichierXlsx, 
+                                                                listXlsx,
+                                                                ClassModule2.paraGen,
+                                                                cheminRelXlsx=cheminFichierUtilisateur)
+        return listFichierUtilisateur
+   
+            
         
         
         

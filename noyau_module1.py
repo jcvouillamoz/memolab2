@@ -463,6 +463,97 @@ def extraitNomFichier(nomComplet):
     
     return nomFichier
 
+def creationListTest(nbLignes=20, nbColonnes=20, largeurCellules=10):
+    """
+    génération d'une liste pour tester, en vue de traiter n'importe quelle liste
+    en entrée par la suite
+    """
+    # nbLignes = 60
+    # nbColonnes = 20
+    nbCarLargCel = largeurCellules
+    listTest = []
+    # boucle des lignes
+    for posLigne in range(nbLignes):
+        # ajout d'une ligne
+        listTest.append([])
+        # boucle des colonnes
+        for posColonne in range(nbColonnes):
+            contenuBrutCell = str(posLigne) + "/" + str(posColonne) + "-" + "X"*nbCarLargCel
+            contenuCell = contenuBrutCell[:nbCarLargCel]
+            listTest[posLigne].append(contenuCell)
+    # print(listTest)
+    return listTest
+
+
+def afficheListEnTable(listAAfficher):
+    import tkinter
+    fenetre = tkinter.Tk()
+        
+    # Création canva dans fenetre
+    canvaFrame = tkinter.Canvas(fenetre)
+    # création frame dans canva
+    frameTable = tkinter.Frame(canvaFrame)
+    # créations des scrollbars dans fenetre
+    scrollbarHorizontale = tkinter.Scrollbar(fenetre)
+    scrollbarVerticale = tkinter.Scrollbar(fenetre)
+    
+    def updateScrollRegion():
+        canvaFrame.update_idletasks()
+        canvaFrame.config(scrollregion=frameTable.bbox())
+    
+    # réglages du Canvas, du Frame, et des scrollbars pour le scrolling
+    def __createScrollableContainer():
+        # rattachement au canva des commandes des scrollbars
+    	canvaFrame.config(xscrollcommand=scrollbarHorizontale.set,
+                       yscrollcommand=scrollbarVerticale.set, 
+                       highlightthickness=0)
+        # config orientations des scrollbars et de leur pilotage 
+        # par les vues de canvaFrame
+    	scrollbarHorizontale.config(orient=tkinter.HORIZONTAL, 
+                                 command=canvaFrame.xview)
+    	scrollbarVerticale.config(orient=tkinter.VERTICAL, 
+                               command=canvaFrame.yview)
+        # affichage des scrollbars
+    	scrollbarHorizontale.pack(fill=tkinter.X, side=tkinter.BOTTOM, 
+                               expand=tkinter.FALSE)
+    	scrollbarVerticale.pack(fill=tkinter.Y, side=tkinter.RIGHT, 
+                             expand=tkinter.FALSE)
+        # affichage du caneva
+    	canvaFrame.pack(fill=tkinter.BOTH, side=tkinter.LEFT, expand=tkinter.TRUE)
+        # affichage du frame dans le canva
+    	canvaFrame.create_window(0, 0, window=frameTable, anchor=tkinter.NW)
+    
+    def __afficheTableList(listAAfficher):
+        """
+        global i
+        tkinter.Label(frameTable, text="Hello World").grid(row=i, column=i)
+        i+=1
+        """
+        # print("Affiche liste tabulaire")
+        # print(listAAfficher)
+        nbLignes = len(listAAfficher)
+        nbColonnes = len(listAAfficher[0])
+        # boucle de création des labels
+        for posLigne in range(nbLignes):
+            for posColonne in range(nbColonnes):
+                contenuCell = listAAfficher[posLigne][posColonne]
+                # print(contenuCell)
+                tkinter.Label(frameTable, text=contenuCell).grid(row=posLigne, column=posColonne)
+    
+        # Mise à jour après l'ajout dynamique de nouveau widget
+        updateScrollRegion()
+    
+    __createScrollableContainer()
+    # addNewLabel()
+    # listTest = creationListTest()
+    __afficheTableList(listAAfficher)
+    
+    fenetre.mainloop()
+
+
+
+
+
 # Création nom de fichier à partir d'un nom d'utilisateur quelconque
 def creaNomFichier(nomUtilisateur):
     # Caractères utilisables dans nomUtilisateur
