@@ -79,29 +79,53 @@ print(testMessage)
 
 # test lancement activité d'une classe de biblio2
 
-
-""" SELECTION UTILISATEUR 
-L'idée est de permettre la mémorisation d'un historique d'évolution de 
-chaque utilisateur. Pour cela un registre des utilisateurs : utilisateurs.xlsx
-est situé dans le sous-répertoire /utilisateurs (paraGen["cheminUtilisateurs"]).
-Il contient les données d'identification ainsi que le nom d'un fichier personnel
-de journalisation des performances et résultats.
 """
-
-
-
-
-# Connexion de l'utilisateur à Memolab
-user = biblio2.Utilisateur()     # création objet de class utilisateur
-listUtilisateur = user.fenetreSelectionUtilisateur()
-print("Finalement : ",listUtilisateur)
-# Mise en liste du fichier personnel de l'utilisateur, avec sa liste de 
-# leçons en cours. Si le fichier n'existe pas il est recréé par copie du 
-# modele présent dans le même répertoire.
-listFichierUtilisateur = user.miseEnListFichierUtilisateur(listUtilisateur[3])
-# affiche liste des lecons en cours
-biblio1.afficheListEnTable(listFichierUtilisateur)
-
+Un dictionnaire "dicoScenario" est créé qui contient la structure suivante:
+    Clé <str> : désignation de la grandeur d'état 
+    Valeur : la variable ou l'objet concerné
+les clés des utilisateurs sont les suivantes:
+    listUtilisateurs : la list des utilisateur enregistrés possédant un 
+                        fichier personnel
+    listUtilisateur : list contenant les lecons en cours d'étude et leurs états
+    nomUtilisateur : prénom nom de l'utilisateur
+    pseudoUtilisateur : pseudo de l'utilisateur
+    nomFichierUtilisateur : nom complet du fichier personnel de l'utilisateur
+Les clés des sessions labo sont les suivantes:
+1) historique leçon en cours :
+    nomFichierLecon : nom du fichier de la lecon en cours d'étude
+    nbQuestions : nombre de questions de dito
+    modeDerNiveau : mode correction dernier niveau
+    derNiveau : note obtenue sur 6 (rapport nbPremRepJustes / nbQuestions)
+    derDuree : Durée dernière session
+    dureeCum : durée cumulée de toutes les sessions de cette leçon
+    dateDerSession : Date de la dernière session
+    derSessionTerminee : Vrai si toutes les questions dernière session
+                            ont été traitées
+2) Session labo en cours :
+    dateSessionEnCours : date du jour
+    dureeSessionEnCours : durée depuis la première question posée
+    SessionTerminee : Flag d'indication si session terminée
+    nbQuestionsRestantes : nombre de questions qu'il reste à poser
+    nbPremRepJustes : Nombre de premières réponses justes
+    nbRepJustes : Nombre total des réponses justes
+    nbRepFausses : Nombre de réponses fausses
+    auMoinsUnMotJuste : mode correction A : au moins un mot contenu dans 
+                    la réponses
+    tousLesMotsJustes : mode correstion B : tous les mots contenus dans 
+                    la réponse
+    tousLesMotsEnBonOrdre : mode correstion C : tous les mots dans le bon ordre
+    copieExacte : mode correction D : copie exacte, nb espaces entre les mots 
+                    non compris
+    noteExamen : rapport du nb de premières réponses justes au nombre de 
+                    questions de la leçon
+    noteTravail : rapport du nombre de questions justes aux questions totales 
+                    posées
+"""
+# Création du dictionnaire d'état du scenario en cours
+makeDicoScenario = biblio2.Scenario()   # instanciation classe Scenario
+dicoScenario = makeDicoScenario.CreationDicoScenario()  # application méthode 
+                                                        # de création
+# print(dicoScenario)
 
 
 
@@ -114,13 +138,6 @@ window.title("Memolab2021a")
 window.geometry("1000x600")
 # window.minsize(640,480)
 window['bg'] = '#d6ffd9'	    # Couleur du fond
-
-
-####################### Configuration des boutons #######################
-
-
-
-
 
 
 ################## Configuration des fonctions appelées par le menu #######
@@ -155,23 +172,24 @@ Structure des menus :
 """
 
 def utilisateurSelectionner():
+    """ SELECTION UTILISATEUR 
+    L'idée est de permettre la mémorisation d'un historique d'évolution de 
+    chaque utilisateur. Pour cela un registre des utilisateurs : utilisateurs.xlsx
+    est situé dans le sous-répertoire /utilisateurs (paraGen["cheminUtilisateurs"]).
+    Il contient les données d'identification ainsi que le nom d'un fichier personnel
+    de journalisation des performances et résultats.
     """
-    Un fichier utilisateurs.xlsx contient la liste des
-    noms d'utilisateurs et les noms de fichiers correspondants.
-    Il contient également une colonne avec un flag au nom
-    de l'utilisateur actif. C'est à lui que sont imputés l'historique
-    de son activité et ses performances
-    Cette fonction permet à l'utilisateur de s'annoncer et donc
-    d'être identifié comme l'utilisateur actif par le flag
-
-    Returns
-    -------
-    nomUtilisateurActif : str
-
-    """
-    # Sélection dans la liste des utilisateurs
-    nomUtilisateurActif = "JCV"
-    # Enregistrement dans le fichiers utilisateurs.xlsx
+    # Connexion de l'utilisateur à Memolab
+    user = biblio2.Utilisateur()     # création objet de class utilisateur
+    listUtilisateur = user.fenetreSelectionUtilisateur()
+    print("Finalement : ",listUtilisateur)
+    nomUtilisateurActif = listUtilisateur[2]
+    # Mise en liste du fichier personnel de l'utilisateur, avec sa liste de 
+    # leçons en cours. Si le fichier n'existe pas il est recréé par copie du 
+    # modele présent dans le même répertoire.
+    listFichierUtilisateur = user.miseEnListFichierUtilisateur(listUtilisateur[3])
+    # affiche liste des lecons en cours
+    biblio1.afficheListEnTable(listFichierUtilisateur)
 
     # Bienvenue <Nom utilisateur>
     messageTitre = "Sélection utilisateur actif..."
@@ -390,7 +408,7 @@ bgFrameColor = "#f29f66"
 fgFrameColor = "black"
 sizeLabelWidget = 12
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameEntete = tkinter.LabelFrame(window,text=textTitre, width = 1000, height = "100")
+frameEntete = tkinter.LabelFrame(window,text=textTitre, width = 1000, height = 100)
 frameEntete.configure(bg=bgFrameColor, fg=fgFrameColor)
 frameEntete.grid(row=0, column=0, columnspan=3)
 frameEntete.grid_propagate(0)
@@ -398,27 +416,27 @@ frameEntete.grid_propagate(0)
 # 
 textTitre = "Niveau :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameNiveau = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "400")
+frameNiveau = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = 400)
 frameNiveau.configure(bg=bgFrameColor, fg=fgFrameColor)
 frameNiveau.grid(row=1, column=0)
 frameNiveau.grid_propagate(0)
 
 textTitre = "Dialogues :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-FrameDialogue = tkinter.LabelFrame(window,labelwidget=titre, width = 600, height = "400")
+FrameDialogue = tkinter.LabelFrame(window,labelwidget=titre, width = 600, height = 400)
 FrameDialogue.grid(row=1, column=1)
 FrameDialogue.grid_propagate(0)
 
 textTitre = "Mode :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameMode = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "400")
+frameMode = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = 400)
 frameMode.configure(bg=bgFrameColor, fg=fgFrameColor)
 frameMode.grid(row=1, column=2)
 frameMode.grid_propagate(0)
 
 textTitre = "Etat leçon en cours :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameEtat = tkinter.LabelFrame(window,labelwidget=titre, width = 1000, height = "100")
+frameEtat = tkinter.LabelFrame(window,labelwidget=titre, width = 1000, height = 100)
 frameEtat.configure(bg=bgFrameColor, fg=fgFrameColor)
 frameEtat.grid(row=2, column=0, columnspan=3)
 frameEtat.grid_propagate(0)
