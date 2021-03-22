@@ -497,6 +497,8 @@ def afficheListEnTable(listAAfficher):
     scrollbarHorizontale = tkinter.Scrollbar(fenetre)
     scrollbarVerticale = tkinter.Scrollbar(fenetre)
     
+    
+    
     def updateScrollRegion():
         canvaFrame.update_idletasks()
         canvaFrame.config(scrollregion=frameTable.bbox())
@@ -506,7 +508,7 @@ def afficheListEnTable(listAAfficher):
         # rattachement au canva des commandes des scrollbars
     	canvaFrame.config(xscrollcommand=scrollbarHorizontale.set,
                        yscrollcommand=scrollbarVerticale.set, 
-                       highlightthickness=0)
+                       highlightthickness=1)
         # config orientations des scrollbars et de leur pilotage 
         # par les vues de canvaFrame
     	scrollbarHorizontale.config(orient=tkinter.HORIZONTAL, 
@@ -531,14 +533,26 @@ def afficheListEnTable(listAAfficher):
         """
         # print("Affiche liste tabulaire")
         # print(listAAfficher)
+        offsetV = 1
+        # titre de la table
+        labelTitreTable = tkinter.Label(frameTable,text = "liste des leçons en cours d'usage")
+        labelTitreTable.grid(row=0, column = 0, columnspan=5)
+        # affichage cellules du tableau
         nbLignes = len(listAAfficher)
         nbColonnes = len(listAAfficher[0])
-        # boucle de création des labels
+        # boucle de création des labels et boutons de sélection
         for posLigne in range(nbLignes):
             for posColonne in range(nbColonnes):
-                contenuCell = listAAfficher[posLigne][posColonne]
-                # print(contenuCell)
-                tkinter.Label(frameTable, text=contenuCell).grid(row=posLigne, column=posColonne)
+                # Affichage case à cocher dans la première colonne
+                if posColonne == 0 and posLigne != 0:
+                    # widget case à cocher
+                    pass
+                else:
+                    # widget label
+                    contenuCell = listAAfficher[posLigne][posColonne]
+                    # print(contenuCell)
+                    tkinter.Label(frameTable, text=contenuCell).grid(row=posLigne+offsetV, column=posColonne)
+                    
     
         # Mise à jour après l'ajout dynamique de nouveau widget
         updateScrollRegion()

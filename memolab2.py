@@ -390,44 +390,38 @@ bgFrameColor = "#f29f66"
 fgFrameColor = "black"
 sizeLabelWidget = 12
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameEntete = tkinter.LabelFrame(window,text=textTitre, width = 800, height = "100")
+frameEntete = tkinter.LabelFrame(window,text=textTitre, width = 1000, height = "100")
 frameEntete.configure(bg=bgFrameColor, fg=fgFrameColor)
 frameEntete.grid(row=0, column=0, columnspan=3)
 frameEntete.grid_propagate(0)
 
 # 
-textTitre = "Question :"
+textTitre = "Niveau :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameQuestion = tkinter.LabelFrame(window,labelwidget=titre, width = 300, height = "300")
-frameQuestion.grid(row=1, column=0)
-frameQuestion.grid_propagate(0)
-
-textTitre = "Réponse :"
-titre = tkinter.Label(text = textTitre, font=("", 12))
-FrameReponse = tkinter.LabelFrame(window,labelwidget=titre, width = 300, height = "300")
-FrameReponse.grid(row=1, column=1)
-FrameReponse.grid_propagate(0)
-
-textTitre = "Paramètres :"
-titre = tkinter.Label(text = textTitre, font=("", 12))
-frameParametres = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "300")
-frameParametres.configure(bg=bgFrameColor, fg=fgFrameColor)
-frameParametres.grid(row=1, column=2)
-frameParametres.grid_propagate(0)
+frameNiveau = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "400")
+frameNiveau.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameNiveau.grid(row=1, column=0)
+frameNiveau.grid_propagate(0)
 
 textTitre = "Dialogues :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameDialogue = tkinter.LabelFrame(window,labelwidget=titre, width = 800, height = "200")
-frameDialogue.configure(bg=bgFrameColor, fg=fgFrameColor)
-frameDialogue.grid(row=2, column=0, columnspan=3)
-frameDialogue.grid_propagate(0)
+FrameDialogue = tkinter.LabelFrame(window,labelwidget=titre, width = 600, height = "400")
+FrameDialogue.grid(row=1, column=1)
+FrameDialogue.grid_propagate(0)
 
-textTitre = "Commandes :"
+textTitre = "Mode :"
 titre = tkinter.Label(text = textTitre, font=("", 12))
-frameCommandes = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "600")
-frameCommandes.configure(bg=bgFrameColor, fg=fgFrameColor)
-frameCommandes.grid(row=0, column=3, rowspan=3)
-frameCommandes.grid_propagate(0)
+frameMode = tkinter.LabelFrame(window,labelwidget=titre, width = 200, height = "400")
+frameMode.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameMode.grid(row=1, column=2)
+frameMode.grid_propagate(0)
+
+textTitre = "Etat leçon en cours :"
+titre = tkinter.Label(text = textTitre, font=("", 12))
+frameEtat = tkinter.LabelFrame(window,labelwidget=titre, width = 1000, height = "100")
+frameEtat.configure(bg=bgFrameColor, fg=fgFrameColor)
+frameEtat.grid(row=2, column=0, columnspan=3)
+frameEtat.grid_propagate(0)
 
 # bouclage de la fenêtre window
 window.mainloop()
